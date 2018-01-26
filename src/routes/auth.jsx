@@ -5,7 +5,6 @@ const router = express.Router();
 
 router.post('/',(req,res) => {
     const {credentials } = req.body;
-    console.log('halo')
     User.findOne({email: credentials.email}).then(user=> {
         if(user){
             res.json({user: user.toAuthJSON()});

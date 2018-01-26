@@ -6,7 +6,8 @@ import uniqueValidator from 'mongoose-unique-validator'
 const schema = new mongoose.Schema({
     email: {type: String, required: true, lowercase: true, index: true, unique: true},
     password: {type: String, required: true},
-    confirmed: {type: Boolean, default: false}
+    confirmed: {type: Boolean, default: false},
+    confirmationToken: {type:String, default: ""}
 }, {timestamps: true});
 
 schema.methods.generateJWT = function generateJWT(){
@@ -21,6 +22,14 @@ schema.methods.toAuthJSON = function toAuthJSON() {
         confirmed: this.confirmed,
         token: this.generateJWT()
     }
+}
+
+schemat.methods.setConfirmationToken = function setConfirmationToken() {
+    this.confirmationToken = this.generateJWT();
+}
+
+schemat.methods.generateConfirmationUrl = function generateConfirmationUrl() {
+    return '${process.env.Host}/confirmation/{thi.confirmationToken}'
 }
 
 schema.plugin(uniqueValidator, {message: 'This email is already taken.'});
